@@ -12,12 +12,16 @@
 
 Keff <- function(r2,alpha) {
   m <- nrow(r2)
-  if (m > 1) {
+  if (m > 2) {
     Q <- sqrt(r2)
     Q[upper.tri(Q,diag=T)] <- NA
     rmax <- apply(Q[-1,],1,max,na.rm=T)
     kappa <- sqrt(1-rmax^(-1.31*log10(alpha)))
     return(1+sum(kappa))
+  } else if (m == 2) {
+    Q <- sqrt(r2[1,2])
+    kappa <- sqrt(1-Q^(-1.31*log10(alpha)))
+    return(1+kappa)
   } else {
     return(1)
   }
