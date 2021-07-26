@@ -1,5 +1,6 @@
 #' @importFrom stats pbeta
 .score.calc <- function(geno,y,Z,X,K,Hinv,ploidy,model,min.MAF,max.geno.freq) {
+geno <- data.frame(geno)
 m <- ncol(geno)
 n <- nrow(Z)
 scores <- numeric(m)*NA
