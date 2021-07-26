@@ -1,5 +1,5 @@
 #' @importFrom stats pbeta
-.score.calc <- function(geno,y,Z,X,K,Hinv,ploidy,model,min.MAF,max.geno.freq) {
+.score.calc <- function(geno,y,Z,X,K,Hinv,ploidy,model,min.MAF,max.geno.freq,min.alt.ind) {
 geno <- data.frame(geno)
 m <- ncol(geno)
 n <- nrow(Z)
@@ -8,7 +8,7 @@ beta.out <- scores
 general <- length(grep("general",model,fixed=T))>0 
 P3D <- !is.null(Hinv)
 for (i in 1:m) {
-	S <- .design.score(geno[,i],model,ploidy,min.MAF,max.geno.freq)
+	S <- .design.score(geno[,i],model,ploidy,min.MAF,max.geno.freq,min.alt.ind)
 	if (!is.null(S)) {
 		v1 <- ncol(S)
 		X2 <- cbind(X,Z%*%S)

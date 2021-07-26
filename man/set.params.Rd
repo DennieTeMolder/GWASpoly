@@ -10,6 +10,7 @@ set.params(
   n.PC = 0,
   MAF = 0.001,
   geno.freq = 0.999,
+  min.alt.ind = 1,
   P3D = T
 )
 }
@@ -33,6 +34,7 @@ A list with the following components
 \item{n.PC}{Number of principal components to include as covariates}
 \item{min.MAF}{Minimum minor allele frequency}
 \item{max.geno.freq}{Maximum genotype frequency (after applying dominance relations)}
+\item{min.alt.ind}{Minimum number of individuals that carry at least one copy of the alt allele}
 \item{P3D}{TRUE/FALSE whether to use the P3D approximation}
 }
 \description{

@@ -1,4 +1,4 @@
-.design.score <- function(Mi,model,ploidy,min.MAF,max.geno.freq){
+.design.score <- function(Mi,model,ploidy,min.MAF,max.geno.freq,min.alt.ind){
 	n <- length(Mi)
 	freq <- mean(Mi,na.rm=T)/ploidy
 	if (min(freq,1-freq) < min.MAF){
@@ -6,7 +6,7 @@
 	} else {
 	if (model=="additive") {
 	  geno.freq <- table(round(Mi))/n
-	  if (max(geno.freq) <= max.geno.freq) {
+	  if (max(geno.freq) <= max.geno.freq & sum(Mi>0) >= min.alt.ind) {
 	    return(matrix(Mi))
 	  } else {
 	    return(NULL)
@@ -14,10 +14,10 @@
 	} else {
 	  Mi <- round(Mi)
   	if (model=="diplo-additive") {
-  		Mi[which((Mi>0)&(Mi<ploidy))] <- ploidy/2
+  		Mi[(Mi>0)&(Mi<ploidy)] <- ploidy/2
   		Mi <- Mi/(ploidy/2)
   		geno.freq <- table(Mi)/n
-  		if (max(geno.freq) <= max.geno.freq) {
+	    if (max(geno.freq) <= max.geno.freq & sum(Mi>0) >= min.alt.ind) {
   			return(matrix(Mi))
   		} else {
   			return(NULL)
@@ -27,7 +27,7 @@
   		Mi[(Mi>0)&(Mi<ploidy)] <- ploidy/2
   		Mi <- Mi/(ploidy/2)
 	  	geno.freq <- table(Mi)/n
-	  	if (max(geno.freq)<=max.geno.freq) {
+	    if (max(geno.freq) <= max.geno.freq & sum(Mi>0) >= min.alt.ind) {
 	  		tmp <- model.matrix(~x,data.frame(x=factor(Mi)))[,-1]
 	  		if (is.null(dim(tmp))) {
 	  			return(matrix(tmp))
@@ -47,7 +47,7 @@
 	  		Mi <- ifelse(Mi<=ploidy-dom.order,0,1)
 	  	}
 	  	geno.freq <- table(Mi)/n
-	  	if (max(geno.freq) <= max.geno.freq) {
+	    if (max(geno.freq) <= max.geno.freq & sum(Mi>0) >= min.alt.ind) {
 	  		return(matrix(Mi))
 	  	} else {
 	  		return(NULL)
@@ -55,7 +55,7 @@
 	  }
 	  if (model=="general") {
 	  	geno.freq <- table(Mi)/n
-	  	if (max(geno.freq)<=max.geno.freq) {
+	    if (max(geno.freq) <= max.geno.freq & sum(Mi>0) >= min.alt.ind) {
 	  		tmp <- model.matrix(~x,data.frame(x=factor(Mi)))[,-1]
 	  		if (is.null(dim(tmp))) {
 	  			return(matrix(tmp))
