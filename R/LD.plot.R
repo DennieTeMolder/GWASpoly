@@ -22,14 +22,16 @@ LD.plot <- function(data,max.pair=1e4,dof=8) {
   result <- NULL
   for (i in 1:n.chrom) {
     ix <- which(data@map$Chrom==chroms[i])
-    m <- length(ix)
-    tmp <- expand.grid(col=1:m,row=1:m)
-    tmp <- tmp[tmp$row >= tmp$col,]  #only need lower triangular
-    r2 <- cor(data@geno[,ix])^2
-    r2.vec <- as.vector(r2[cbind(tmp$row,tmp$col)])
-    d <- as.matrix(dist(matrix(data@map$Position[ix],ncol=1))) #distance matrix
-    d.vec <- as.vector(d[cbind(tmp$row,tmp$col)])/1e6
-    result <- rbind(result,data.frame(d=d.vec,r2=r2.vec))
+    if (length(ix) > 1) {
+      m <- length(ix)
+      tmp <- expand.grid(col=1:m,row=1:m)
+      tmp <- tmp[tmp$row >= tmp$col,]  #only need lower triangular
+      r2 <- cor(data@geno[,ix])^2
+      r2.vec <- as.vector(r2[cbind(tmp$row,tmp$col)])
+      d <- as.matrix(dist(matrix(data@map$Position[ix],ncol=1))) #distance matrix
+      d.vec <- as.vector(d[cbind(tmp$row,tmp$col)])/1e6
+      result <- rbind(result,data.frame(d=d.vec,r2=r2.vec))
+    }
   }
   
   max.pair <- min(max.pair,nrow(result))
