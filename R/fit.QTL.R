@@ -54,7 +54,7 @@ fit.QTL <- function(data,trait,qtl,fixed=NULL) {
 	df <- integer(n.qtl)
 	X0 <- X
 	for (i in 1:n.qtl) {
-	  S[[i]] <- .design.score(data@geno[,qtl$Marker[i]],model=qtl$Model[i],ploidy=data@ploidy,min.MAF=0,max.geno.freq=1)
+	  S[[i]] <- .design.score(data@geno[,qtl$Marker[i]],model=qtl$Model[i],ploidy=data@ploidy,min.MAF=0,max.geno.freq=1,min.alt.ind=0)
 	  stopifnot(!is.null(S[[i]]))
 	  df[i] <- ncol(S[[i]])
     X <- cbind(X,Z%*%S[[i]])
