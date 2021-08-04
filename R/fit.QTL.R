@@ -8,6 +8,7 @@
 #' @param trait name of trait
 #' @param qtl data frame to specify the multi-QTL model (see Details)
 #' @param fixed data frame to specify the fixed effects (see Details)
+#' @param verbose boolean to indicate if additional model stats are printed
 #' 
 #' @return data frame with partial r2 and p-values
 #' 
@@ -15,7 +16,7 @@
 #' @importFrom rrBLUP mixed.solve
 #' @importFrom stats model.matrix pchisq
 #' 
-fit.QTL <- function(data,trait,qtl,fixed=NULL) {
+fit.QTL <- function(data,trait,qtl,fixed=NULL,verbose=F) {
 	stopifnot(inherits(data,"GWASpoly.K"))
   stopifnot(is.element(trait,names(data@scores)))
 	stopifnot(qtl$Model %in% c("additive","general",
@@ -60,6 +61,14 @@ fit.QTL <- function(data,trait,qtl,fixed=NULL) {
     X <- cbind(X,Z%*%S[[i]])
 	}
 	full.model <- mixed.solve(y=y,X=.make.full(X),Z=Z,K=K,method = "ML")
+
+  if (verbose) {
+    null.model <- rrBLUP::mixed.solve(y=y,X=NULL,Z=Z,K=K,method = "ML")
+    deviance <- 2*(full.model$LL - null.model$LL)
+    pval <- pchisq(q=deviance,df=1,lower.tail=FALSE)
+    R2 <- 1-exp(-deviance/n)
+    cat(sprintf("Full model: R2=%.3f, pval=%.1e\n", R2, pval))
+  }
 
 	pval <- R2 <- numeric(n.qtl)
 	for (i in 1:n.qtl) {
